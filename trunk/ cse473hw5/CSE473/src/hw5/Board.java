@@ -116,6 +116,7 @@ public class Board {
 			} else if (board[x][y] == null) {
 				return null;
 			} else {
+				conversions.add(new Move(x, y, marker, 0));
 				x += deltaX;
 				y += deltaY;
 			}
