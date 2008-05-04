@@ -2,10 +2,16 @@ package hw5;
 /**
  * Alex Meng
  * CSE 473 Spring 2007
- * Homework 5, Othello Driver class
+ * Homework 5, Othello, Othello.java
  */
 import java.util.ArrayList;
-
+/**
+ * This class is designed to be the driver for the Othello game.
+ * This constructs the board and players that are necessary in order to play an Othello game.
+ * 
+ * @author alexmeng
+ *
+ */
 public class Othello {
 
 	/**
