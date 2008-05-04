@@ -56,14 +56,9 @@ public class GameHeuristic {
 	private static boolean terminalTest(Board board) {
 		return board.isGameOver();
 	}
-	
+
 	private static int utility(Board board) {
-		String winner = board.getWinner();
-		if (winner == null)
-			return 0;
-		if (winner.equals("X"))
-			return 1;
-		return -1;
+		return board.getMajority();	
 	}
 	public static Move SearchAlphaBetaPruning(Player player,Board board) {
 		if (player.getMax())
