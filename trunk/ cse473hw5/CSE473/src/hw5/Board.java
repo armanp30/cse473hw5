@@ -5,7 +5,12 @@ package hw5;
  * Homework 5, Othello, Board.java, Class used to define an Othello board.
  */
 import java.util.ArrayList;
-
+/**
+ * This class is designed to represent the board for Othello.
+ * 
+ * @author alexmeng
+ *
+ */
 public class Board {
 	//final constant representing the size of the board
 	private final int  SIZE;
