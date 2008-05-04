@@ -37,7 +37,7 @@ public class GameHeuristic {
 	
 	private static Move minValue(Board board) {
 		Move result = new Move(0,0,null,2);
-		ArrayList<Move> childrens = board.getEmptySpots();
+		ArrayList<Move> childrens = board.getLegalMoves(null); //getEmptySpots();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = "O";
@@ -75,7 +75,7 @@ public class GameHeuristic {
 	
 	public static Move maxValue(Board board, int alpha, int beta) {
 		Move result = new Move(0,0,null,-2);
-		ArrayList<Move> childrens = board.getEmptySpots();
+		ArrayList<Move> childrens = board.getLegalMoves(null); //getEmptySpots();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = "X";
@@ -97,7 +97,7 @@ public class GameHeuristic {
 	
 	public static Move minValue(Board board, int alpha, int beta) {
 		Move result = new Move(0,0,null,2);
-		ArrayList<Move> childrens = board.getEmptySpots();
+		ArrayList<Move> childrens = board.getLegalMoves(null);//();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = "O";
