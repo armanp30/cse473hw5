@@ -56,10 +56,19 @@ public class GameHeuristic {
 	private static boolean terminalTest(Board board) {
 		return board.isGameOver();
 	}
-
+	
+	/**
+	 * An internal method used to determine the value of the board
+	 * given its current state.
+	 * 
+	 * @param board a Board object, representing the current state of the board.
+	 * @return an int, representing a numerical value of the state. Positive int indicates that the first player is winning. Negative reflects second player is winning.
+	 * The value represents how many pieces they occupy.
+	 */
 	private static int utility(Board board) {
 		return board.getMajority();	
 	}
+	
 	public static Move SearchAlphaBetaPruning(Player player,Board board) {
 		if (player.getMax())
 			return maxValue(board, -2, 2);
