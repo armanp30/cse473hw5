@@ -4,6 +4,7 @@ package hw5;
  * CSE 473 Spring 2007
  * Homework 5, Othello, Board.java, Class used to define an Othello board.
  */
+
 import java.util.ArrayList;
 /**
  * This class is designed to represent the board for Othello.
@@ -40,11 +41,12 @@ public class Board {
 	 * This method is designed to mark a specific location on the board
 	 * given the marker passed in through the parameters.
 	 * 
-	 * @param marker, A indicator representing the player to occupy the location
-	 * @param row	The X coordinate on the board of the location to occupy.
-	 * @param col	The Y coordinate on the board of the location to occupy.
+	 * @param move	A move to apply to the board
 	 */
-	public void makeMove(String marker, int row, int col) {
+	public void makeMove(Move move) {
+		int row = move.x;
+		int col = move.y;
+		String marker = move.marker;
 
 		if (this.isGameOver())
 			throw new IllegalStateException("The game has ended.");
@@ -62,7 +64,64 @@ public class Board {
 		moves++;
 	}
 	
-
+	/**
+	 * getConversions determines what cells should be converted based on
+	 * applying the specified move.
+	 * 
+	 * @param move	The move to check conversion consequences for
+	 * @return 	an ArrayList of affected cells
+	 * 
+	 */
+	
+	private ArrayList<Move> getConversions(Move move) {
+		int checkX;
+		int checkY;
+		ArrayList<Move> conversions = new ArrayList<Move>();
+		ArrayList<Move> temp = new ArrayList<Move>();
+		for (int deltaX = -1; deltaX < 2; deltaX++) {
+			for (int deltaY = -1; deltaY < 2; deltaY++) {
+				checkX = move.x + deltaX;
+				checkY = move.y + deltaY;
+				if (checkX >= 0 && checkX < 8 && checkY >= 0 &&
+					checkY < 8 && board[checkX][checkY] != null &&
+					board[checkX][checkY] != move.marker) {
+					
+					temp = findConversions(checkX, checkY, deltaX, deltaY, move.marker);
+					if (temp != null) {
+						conversions.addAll(temp);
+					}
+				}
+			}
+		}
+		return conversions;
+	}
+	
+	/**
+	 * A helper function for getConversions which searches in a direction for
+	 * cells which should be converted.
+	 * @param x		x coordinate of cell currently being checked
+	 * @param y		y coordinate of cell currently being checked
+	 * @param deltaX	change in x coordinate for next cell
+	 * @param deltaY	change in y coordinate for next cell
+	 * @param marker	marker for player whose conversions we're finding
+	 * @return 	an ArrayList of Move objects representing cells that will be
+	 * 			converted
+	 */
+	
+	private ArrayList<Move> findConversions(int x, int y, int deltaX, int deltaY, String marker) {
+		ArrayList<Move> conversions = new ArrayList<Move>();
+		while (x < 8 && x >= 0 && y < 8 && y >= 0) {
+			if (board[x][y] == marker) {
+				return conversions;
+			} else if (board[x][y] == null) {
+				return null;
+			} else {
+				x += deltaX;
+				y += deltaY;
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * This method is designed to undo a move based on a coordinates
@@ -85,14 +144,54 @@ public class Board {
 	 * @param player, a Player object, representing which player to generate valid moves for.
 	 * @return an ArrayList<Move>, represents a collection of Move objects that are valid for the player passed.
 	 */
-	public ArrayList<Move> getLegalMoves(Player player) {		
-		ArrayList<Move> result = new ArrayList<Move>(); 
-		for (int i=0; i<SIZE;i++) {
-			for (int k=0; k<SIZE; k++)
-				if (board[i][k]==null)
-					result.add( new Move(i+1, k+1, null,0) );
-		}		
-		return result;
+	public ArrayList<Move> getLegalMoves(Player player) {
+		int checkX;
+		int checkY;
+		Move move;
+		ArrayList<Move> legalMoves = new ArrayList<Move>();
+		for (int x = 0; x < 8; x++) {
+			for (int y = 0; y < 8; y++) {
+				if (board[x][y] == player.getMarker()) {
+					for (int deltaX = -1; deltaX < 2; deltaX++) {
+						for (int deltaY = -1; deltaY < 2; deltaY++) {
+							checkX = x + deltaX;
+							checkY = y + deltaY;
+							if (checkX >= 0 && checkX < 8 && checkY >= 0 &&
+								checkY < 8 && board[checkX][checkY] != null &&
+								board[checkX][checkY] != player.getMarker()) {
+								
+								move = findLegalMove(checkX, checkY, deltaX, deltaY, player);
+								if (move != null) {
+									legalMoves.add(move);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return legalMoves;
+	}
+
+	/**
+	 * Explores a direction specified by deltaX and deltaY from an origin
+	 * cell searching for a legal move.
+	 * @param x		x coordinate of current cell to check
+	 * @param y		y coordinate of current cell to check
+	 * @param deltaX	change in x coordinate for next cell
+	 * @param deltaY	change in y coordinate for next cell
+	 * @param player	Player whose moves we're finding
+	 * @return	A Move if a legal move is found, else null
+	 */
+
+	private Move findLegalMove(int x, int y, int deltaX, int deltaY, Player player) {
+		if (board[x][y] == null) {
+			return new Move(x, y, player.getMarker(), 0);
+		} else if (board[x][y] == player.getMarker()) {
+			return null;
+		} else {
+			return findLegalMove(x + deltaX, y + deltaY, deltaX, deltaY, player);
+		}
 	}
 	
 	/**
