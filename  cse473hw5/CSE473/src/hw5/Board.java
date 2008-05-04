@@ -7,13 +7,21 @@ package hw5;
 import java.util.ArrayList;
 
 public class Board {
-	
+	//final constant representing the size of the board
 	private final int  SIZE;
+	//a 2D array representing the board
 	private String[][] board;
+	//a field used to keep track of the number of moves
 	private int moves; 
 	
+	//a string to indicate the winning marker, once a winner is found.
 	private String winner;
 	
+	/**
+	 * Constructs a Board object based on the size passed.
+	 * 
+	 * @param size an int, representing how large to construct the board.
+	 */
 	public Board( int size ) {
 		this.SIZE = size;
 		this.board = new String[SIZE][SIZE];
@@ -23,13 +31,6 @@ public class Board {
 	}
 	
 	
-	private void setInitialState() {
-		makeMove("B",5,4);
-		makeMove("B",4,5);
-		makeMove("W",4,4);
-		makeMove("W",5,5);
-		
-	}
 	/**
 	 * This method is designed to mark a specific location on the board
 	 * given the marker passed in through the parameters.
@@ -56,15 +57,7 @@ public class Board {
 		moves++;
 	}
 	
-	/**
-	 * This method is designed to return to the client
-	 * the size of the board.
-	 * 
-	 * @return an int, representing the size of the board.
-	 */
-	public int getBoardSize() {
-		return this.SIZE;
-	}
+
 	
 	/**
 	 * This method is designed to undo a move based on a coordinates
@@ -83,7 +76,9 @@ public class Board {
 
 	/**
 	 * This generates a list of valid moves to make.
-	 * @return
+	 * 
+	 * @param player, a Player object, representing which player to generate valid moves for.
+	 * @return an ArrayList<Move>, represents a collection of Move objects that are valid for the player passed.
 	 */
 	public ArrayList<Move> getLegalMoves(Player player) {		
 		ArrayList<Move> result = new ArrayList<Move>(); 
@@ -95,15 +90,22 @@ public class Board {
 		return result;
 	}
 	
+	/**
+	 * This method is designed to determine if the last move made
+	 * resulted as the winning move. 
+	 * 
+	 * @param x an int, representing the x coordinate.
+	 * @param y an int, representing the y coordinate.
+	 * 
+	 * @return a boolean, true, if the last move was a winning move. false, otherwise.
+	 */
 	public boolean isWinner(int x, int y) {
 		String marker = board[x][y];
 		
 		boolean rowCheck=true, colCheck=true, diagLeftCheck=true, diagRightCheck=true;
 
 		//check vertical
-		//check horizontal
-		//check diagonal
-		
+		//check horizontal				
 		for (int i=0; i<SIZE; i++) {
 			if (board[x][i] == null || !board[x][i].equals(marker))
 				rowCheck = false;
@@ -112,7 +114,7 @@ public class Board {
 		}
 		
 		int k=2;
-		//diagonal
+		//check diagonal 
 		for (int i=0; i<=SIZE*SIZE; i+=SIZE+1) {
 			int tempX = i % SIZE;
 			int tempY = i / SIZE;
@@ -124,19 +126,43 @@ public class Board {
 				diagRightCheck = false;
 			k+=(SIZE-1);
 		}
-		
 		return rowCheck || colCheck || diagLeftCheck || diagRightCheck;
 	}
 	
+	/**
+	 * This method is designed to return to the client
+	 * the size of the board.
+	 * 
+	 * @return an int, representing the size of the board.
+	 */
+	public int getBoardSize() {
+		return this.SIZE;
+	}
 	
+	/**
+	 * This checks if the board is in a state where the game 
+	 * has ended.
+	 * 
+	 * @return a boolean: true, if the game has ended. false, otherwise.
+	 */
 	public boolean isGameOver(){
 		return (moves>= SIZE*SIZE) || winner != null;
 	}
 	
+	/**
+	 * Returns the marker of the winning player.
+	 * 
+	 * @return a String object, representing the marker of the victorious player.
+	 */
 	public String getWinner() {
 		return winner;
 	}
 	
+	/**
+	 * A method used to print to the console the current board state.
+	 * 
+	 * @return void
+	 */
 	public void printBoard() {
 		System.out.println("*************************");
 		for (int i=0; i<SIZE;i++) {
@@ -149,4 +175,18 @@ public class Board {
 		}
 		System.out.println("*************************");
 	}
+	
+	/**
+	 * An internal method which sets the initial state of the board.
+	 * By calling the makeMove method.
+	 * 
+	 * @return void
+	 */
+	private void setInitialState() {
+		makeMove("B",5,4);
+		makeMove("B",4,5);
+		makeMove("W",4,4);
+		makeMove("W",5,5);
+	}
+	
 }
