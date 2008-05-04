@@ -2,7 +2,7 @@ package hw5;
 /**
  * Alex Meng
  * CSE 473 Spring 2007
- * Homework 4, Tic Tac Toe, Minimax & Alpha Pruning
+ * Homework 5, Othello, GameHeuristic.java -- AI class used to make moves for the AI using Minimax & Alpha Pruning.
  */
 import java.util.ArrayList;
 

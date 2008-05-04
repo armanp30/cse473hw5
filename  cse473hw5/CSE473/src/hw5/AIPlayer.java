@@ -2,7 +2,7 @@ package hw5;
 /**
  * Alex Meng
  * CSE 473 Spring 2007
- * Homework 4, Tic Tac Toe, Minimax & Alpha Pruning
+ * Homework 5, Othello, AIPlayer.java, this class is used to define the state and behavior of an AI Player.
  */
 public class AIPlayer implements Player {
 	private String marker;
