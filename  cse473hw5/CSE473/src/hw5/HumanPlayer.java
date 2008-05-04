@@ -56,6 +56,6 @@ public class HumanPlayer implements Player {
 					System.out.println("**Invalid Move**");
 		} while (!legalMoves.contains(temp));
 		
-		state.makeMove(temp.marker, temp.x, temp.y);
+		state.makeMove(temp);
 	}
 }

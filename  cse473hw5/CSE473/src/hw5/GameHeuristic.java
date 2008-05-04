@@ -22,7 +22,7 @@ public class GameHeuristic {
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = "X";
-			board.makeMove(temp.marker, temp.x, temp.y);
+			board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
 			else
@@ -41,7 +41,7 @@ public class GameHeuristic {
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = "O";
-			board.makeMove(temp.marker, temp.x, temp.y);
+			board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
 			else
@@ -83,7 +83,7 @@ public class GameHeuristic {
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = "X";
-			board.makeMove(temp.marker, temp.x, temp.y);
+			board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
 			else
@@ -105,7 +105,7 @@ public class GameHeuristic {
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = "O";
-			board.makeMove(temp.marker, temp.x, temp.y);
+			board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
 			else

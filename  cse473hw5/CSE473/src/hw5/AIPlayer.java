@@ -59,7 +59,7 @@ public class AIPlayer implements Player {
 		else 
 			bestMove = GameHeuristic.SearchAlphaBetaPruning(this,state);
 		
-		state.makeMove(marker, bestMove.x, bestMove.y);
+		state.makeMove(bestMove);
 	}
 
 }
