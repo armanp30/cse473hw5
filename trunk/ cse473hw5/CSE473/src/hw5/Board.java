@@ -2,7 +2,7 @@ package hw5;
 /**
  * Alex Meng
  * CSE 473 Spring 2007
- * Homework 4, Tic Tac Toe, Minimax & Alpha Pruning
+ * Homework 5, Othello, Board.java, Class used to define an Othello board.
  */
 import java.util.ArrayList;
 

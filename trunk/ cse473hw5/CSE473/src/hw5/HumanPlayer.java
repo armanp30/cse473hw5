@@ -1,5 +1,9 @@
 package hw5;
-
+/**
+ * Alex Meng
+ * CSE 473 Spring 2007
+ * Homework 5, Othello, Humanplayer.java, Class used to define the state and behavior of a Human Player.
+ */
 import java.util.ArrayList;
 import java.util.Scanner;
 
