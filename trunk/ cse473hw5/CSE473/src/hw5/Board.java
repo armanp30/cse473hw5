@@ -145,6 +145,30 @@ public class Board {
 	}
 	
 	/**
+	 * This method is used to determine who is currently leading the
+	 * board with the most occupied cells. 
+	 * 
+	 * @return an int, representing how many cells are occupied. A positive result means B, a negative means W.
+	 */
+	public int getMajority() {
+		int b=0, w=0;
+		
+		for (int i=0; i<this.SIZE;i++) {
+			for (int j=0; j<this.SIZE; j++) {
+				if ( this.board[i][j].equals(Markers.first) )
+					b++;
+				if ( this.board[i][j].equals(Markers.second) )
+					w--;					
+			}
+		}
+		
+		if (Math.abs(w) > b)
+			return w;
+		else
+			return b;
+	}
+	
+	/**
 	 * This checks if the board is in a state where the game 
 	 * has ended.
 	 * 
@@ -188,10 +212,10 @@ public class Board {
 	 * @return void
 	 */
 	private void setInitialState() {
-		makeMove("B",5,4);
-		makeMove("B",4,5);
-		makeMove("W",4,4);
-		makeMove("W",5,5);
+		makeMove(Markers.first,5,4);
+		makeMove(Markers.first,4,5);
+		makeMove(Markers.second,4,4);
+		makeMove(Markers.second,5,5);
 	}
 	
 }
