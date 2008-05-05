@@ -348,9 +348,6 @@ public class Board {
 		makeMove(new Move(5,4,Markers.first,0));
 		makeMove(new Move(4,5,Markers.first,0));
 		makeMove(new Move(4,4,Markers.second,0));
-		makeMove(new Move(1,1,Markers.first,0));
-		makeMove(new Move(2,2,Markers.second,0));
-		makeMove(new Move(1,2,Markers.second,0));
 		makeMove(new Move(5,5,Markers.second,0));
 	}
 	
