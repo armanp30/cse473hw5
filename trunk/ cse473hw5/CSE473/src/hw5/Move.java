@@ -35,6 +35,22 @@ public class Move {
 		this.value = value;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		boolean xEq = true;
+		boolean yEq = true;
+		if ( ((Move)obj).x != this.x)
+			xEq = false;
+		if ( ((Move)obj).y != this.y)
+			yEq = false;
+		return xEq && yEq;
+	}
+	@Override
+	public String toString() {
+		String result = "X: "+ this.x + " Y: " + this.y + " Marked: " + ((this.marker==null) ? "_" : this.marker);
+		return result;
+	}
+	
 	
 	
 }
