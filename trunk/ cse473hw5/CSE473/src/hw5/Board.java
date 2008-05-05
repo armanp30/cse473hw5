@@ -312,10 +312,10 @@ public class Board {
 	 * @return void
 	 */
 	private void setInitialState() {
-		makeMove(Markers.first,5,4);
-		makeMove(Markers.first,4,5);
-		makeMove(Markers.second,4,4);
-		makeMove(Markers.second,5,5);
+		makeMove(new Move(5,4,Markers.first,0));
+		makeMove(new Move(4,5,Markers.first,0));
+		makeMove(new Move(4,4,Markers.second,0));
+		makeMove(new Move(5,5,Markers.second,0));
 	}
 	
 }
