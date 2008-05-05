@@ -146,25 +146,25 @@ public class Board {
 	 * @return an ArrayList<Move>, represents a collection of Move objects that are valid for the player passed.
 	 */
 	public ArrayList<Move> getLegalMoves(Player player) {
-		int checkX;
-		int checkY;
+		int checkX, checkY;
 		Move move;
 		ArrayList<Move> legalMoves = new ArrayList<Move>();
 		for (int x = 0; x < 8; x++) {
 			for (int y = 0; y < 8; y++) {
-				if (board[x][y] == player.getMarker()) {
+				if (board[x][y] != null && board[x][y].equals(player.getMarker())) {
 					for (int deltaX = -1; deltaX < 2; deltaX++) {
 						for (int deltaY = -1; deltaY < 2; deltaY++) {
-							checkX = x + deltaX;
-							checkY = y + deltaY;
-							if (checkX >= 0 && checkX < 8 && checkY >= 0 &&
-								checkY < 8 && board[checkX][checkY] != null &&
-								board[checkX][checkY] != player.getMarker()) {
-								
-								move = findLegalMove(checkX, checkY, deltaX, deltaY, player);
+							Move tempMove =
+								new Move( 1+x + deltaX,y + deltaY+1, null, 0);
+							if (validMove(tempMove)) {
+								tempMove.marker = board[tempMove.x-1][tempMove.y-1];
+								if (tempMove.marker != null &&  !tempMove.marker.equals(player.getMarker())) {
+									move = findLegalMove(new Move(x+1,y+1,player.getMarker(),0), tempMove, player);									
 								if (move != null) {
 									legalMoves.add(move);
+									System.out.println("Marked" + move);
 								}
+							}
 							}
 						}
 					}
@@ -174,6 +174,17 @@ public class Board {
 		return legalMoves;
 	}
 
+	private boolean validMove(Move location) {
+		boolean max=true, min=true;
+		
+		if ( location.y >this.SIZE || location.x >this.SIZE )
+			max = false;
+		if (location.y < 1 || location.x <1 )
+			min = false;
+		
+		return max && min;
+		
+	}
 	/**
 	 * Explores a direction specified by deltaX and deltaY from an origin
 	 * cell searching for a legal move.
@@ -195,6 +206,28 @@ public class Board {
 		}
 	}
 	
+	private Move findLegalMove(Move oldMove, Move newMove,Player player) {
+		
+		if (newMove == null)
+			return null;
+		else if (newMove.marker==null)
+			return newMove;
+		else if  (newMove.marker.equals(player.getMarker()))
+			return null;
+		else
+			return findLegalMove(newMove, makeNewMove(oldMove, newMove), player);
+	}
+	
+	private Move makeNewMove(Move oldM,Move newM) {
+		int x = newM.x - oldM.x;
+		int y = newM.y - oldM.y;
+		Move result = new Move(newM.x + x, newM.y+ y,null,0);
+		if ( validMove(result) ) {
+			result.marker = board[result.x-1][result.y-1];
+			return result;
+		}else
+			return null;
+	}
 	/**
 	 * This method is designed to determine if the last move made
 	 * resulted as the winning move. 
@@ -315,6 +348,9 @@ public class Board {
 		makeMove(new Move(5,4,Markers.first,0));
 		makeMove(new Move(4,5,Markers.first,0));
 		makeMove(new Move(4,4,Markers.second,0));
+		makeMove(new Move(1,1,Markers.first,0));
+		makeMove(new Move(2,2,Markers.second,0));
+		makeMove(new Move(1,2,Markers.second,0));
 		makeMove(new Move(5,5,Markers.second,0));
 	}
 	
