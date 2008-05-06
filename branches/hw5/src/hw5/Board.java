@@ -43,10 +43,11 @@ public class Board {
 	 * 
 	 * @param move	A move to apply to the board
 	 */
-	public void makeMove(Move move) {
+	public ArrayList<Move> makeMove(Move move) {
 		int row = move.x;
 		int col = move.y;
 		String marker = move.marker;
+		ArrayList<Move> conversions;
 
 		if (this.isGameOver())
 			throw new IllegalStateException("The game has ended.");
@@ -54,14 +55,26 @@ public class Board {
 		if (this.board[row-1][col-1]!=null)
 			throw new IllegalStateException("Position is occupied.");
 		
-		//sets the move on the board
-		this.board[row-1][col-1] = marker;
+		conversions = getConversions(move);
+		for (Move m: conversions) {
+			convert(m);
+		}
+		board[move.x][move.y] = move.marker;
 		
 		//check for winner after move		
 		if ( isWinner(row-1, col-1) )
 			winner = marker;
 		
 		moves++;
+		return conversions;
+	}
+	
+	private void convert(Move move) {
+		if (board[move.x][move.y] == Markers.first) {
+			board[move.x][move.y] = Markers.second;
+		} else {
+			board[move.x][move.y] = Markers.first;
+		}
 	}
 	
 	/**
@@ -131,11 +144,12 @@ public class Board {
 	 * @param x an int, representing the x coordinate. 
 	 * @param y an int, representing the y coordinate.
 	 */
-	public void undoMove(int x, int y) {
-		if (isGameOver())
-			winner=null;
-
-		this.board[x-1][y-1] = null;
+	public void undoMove(Move move, ArrayList<Move> conversions) {
+		winner=null;
+		for (Move m: conversions) {
+			convert(m);
+		}
+		board[move.x][move.y] = null;
 		moves--;
 	}
 
