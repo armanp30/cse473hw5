@@ -21,8 +21,8 @@ public class Othello {
 	
 		ArrayList<Player> players = new ArrayList<Player>();
 		
-		players.add( new HumanPlayer("B"));
-		players.add( new HumanPlayer("W"));
+		players.add( new HumanPlayer(Markers.first));
+		players.add( new HumanPlayer(Markers.second));
 		//players.add(new AIPlayer("W",false));
 		
 		Board gameBoard = new Board(8);

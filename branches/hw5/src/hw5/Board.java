@@ -46,7 +46,6 @@ public class Board {
 	public ArrayList<Move> makeMove(Move move) {
 		int row = move.x;
 		int col = move.y;
-		String marker = move.marker;
 		ArrayList<Move> conversions;
 
 		if (this.isGameOver())
@@ -59,21 +58,17 @@ public class Board {
 		for (Move m: conversions) {
 			convert(m);
 		}
-		board[move.x][move.y] = move.marker;
-		
-		//check for winner after move		
-		if ( isWinner(row-1, col-1) )
-			winner = marker;
+		board[move.x - 1][move.y - 1] = move.marker;
 		
 		moves++;
 		return conversions;
 	}
 	
 	private void convert(Move move) {
-		if (board[move.x][move.y] == Markers.first) {
-			board[move.x][move.y] = Markers.second;
+		if (board[move.x - 1][move.y - 1] == Markers.first) {
+			board[move.x - 1][move.y - 1] = Markers.second;
 		} else {
-			board[move.x][move.y] = Markers.first;
+			board[move.x - 1][move.y - 1] = Markers.first;
 		}
 	}
 	
@@ -93,11 +88,10 @@ public class Board {
 		ArrayList<Move> temp = new ArrayList<Move>();
 		for (int deltaX = -1; deltaX < 2; deltaX++) {
 			for (int deltaY = -1; deltaY < 2; deltaY++) {
-				checkX = move.x + deltaX;
-				checkY = move.y + deltaY;
-				if (checkX >= 0 && checkX < 8 && checkY >= 0 &&
-					checkY < 8 && board[checkX][checkY] != null &&
-					board[checkX][checkY] != move.marker) {
+				checkX = move.x - 1 + deltaX;
+				checkY = move.y - 1 + deltaY;
+				if (checkX >= 0 && checkX < SIZE && checkY >= 0 && checkY < SIZE &&
+						board[checkX][checkY] != null && board[checkX][checkY] != move.marker) {
 					
 					temp = findConversions(checkX, checkY, deltaX, deltaY, move.marker);
 					if (temp != null) {
@@ -123,13 +117,13 @@ public class Board {
 	
 	private ArrayList<Move> findConversions(int x, int y, int deltaX, int deltaY, String marker) {
 		ArrayList<Move> conversions = new ArrayList<Move>();
-		while (x < 8 && x >= 0 && y < 8 && y >= 0) {
+		while (x < SIZE && x >= 0 && y < SIZE && y >= 0) {
 			if (board[x][y] == marker) {
 				return conversions;
 			} else if (board[x][y] == null) {
 				return null;
 			} else {
-				conversions.add(new Move(x, y, marker, 0));
+				conversions.add(new Move(x + 1, y + 1, marker, 0));
 				x += deltaX;
 				y += deltaY;
 			}
@@ -149,7 +143,7 @@ public class Board {
 		for (Move m: conversions) {
 			convert(m);
 		}
-		board[move.x][move.y] = null;
+		board[move.x - 1][move.y - 1] = null;
 		moves--;
 	}
 
@@ -168,17 +162,14 @@ public class Board {
 				if (board[x][y] != null && board[x][y].equals(player.getMarker())) {
 					for (int deltaX = -1; deltaX < 2; deltaX++) {
 						for (int deltaY = -1; deltaY < 2; deltaY++) {
-							Move tempMove =
-								new Move( 1+x + deltaX,y + deltaY+1, null, 0);
-							if (validMove(tempMove)) {
-								tempMove.marker = board[tempMove.x-1][tempMove.y-1];
-								if (tempMove.marker != null &&  !tempMove.marker.equals(player.getMarker())) {
-									move = findLegalMove(new Move(x+1,y+1,player.getMarker(),0), tempMove, player);									
-								if (move != null) {
+							checkX = x + deltaX;
+							checkY = y + deltaY;
+							if ( checkX >= 0 && checkX < SIZE && checkY >= 0 &&
+									checkY < SIZE && board[checkX][checkY] != null) {
+								move = findLegalMove(checkX, checkY, deltaX, deltaY, player.getMarker());
+								if (move != null && !legalMoves.contains(move)) {
 									legalMoves.add(move);
-									System.out.println("Marked" + move);
 								}
-							}
 							}
 						}
 					}
@@ -188,6 +179,7 @@ public class Board {
 		return legalMoves;
 	}
 
+	/*
 	private boolean validMove(Move location) {
 		boolean max=true, min=true;
 		
@@ -199,6 +191,7 @@ public class Board {
 		return max && min;
 		
 	}
+	*/
 	/**
 	 * Explores a direction specified by deltaX and deltaY from an origin
 	 * cell searching for a legal move.
@@ -210,16 +203,17 @@ public class Board {
 	 * @return	A Move if a legal move is found, else null
 	 */
 
-	private Move findLegalMove(int x, int y, int deltaX, int deltaY, Player player) {
+	private Move findLegalMove(int x, int y, int deltaX, int deltaY, String marker) {
 		if (board[x][y] == null) {
-			return new Move(x, y, player.getMarker(), 0);
-		} else if (board[x][y] == player.getMarker()) {
+			return new Move(x + 1, y + 1, marker, 0);
+		} else if (board[x][y].equals(marker)) {
 			return null;
 		} else {
-			return findLegalMove(x + deltaX, y + deltaY, deltaX, deltaY, player);
+			return findLegalMove(x + deltaX, y + deltaY, deltaX, deltaY, marker);
 		}
 	}
 	
+	/*
 	private Move findLegalMove(Move oldMove, Move newMove,Player player) {
 		
 		if (newMove == null)
@@ -242,6 +236,7 @@ public class Board {
 		}else
 			return null;
 	}
+	*/
 	/**
 	 * This method is designed to determine if the last move made
 	 * resulted as the winning move. 

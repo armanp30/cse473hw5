@@ -37,7 +37,7 @@ public class HumanPlayer implements Player {
 	 * method is specifically designed for the minimax/alpha beta pruning algorthim.
 	 */
 	public boolean getMax() {
-		return marker.equals("B");
+		return marker.equals(Markers.first);
 	}
 	
 	public String getMarker() {
