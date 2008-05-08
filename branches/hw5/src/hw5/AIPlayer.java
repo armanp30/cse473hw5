@@ -32,7 +32,7 @@ public class AIPlayer implements Player {
 	 * @return a boolean, true, if it moves first. false, otherwise.
 	 */
 	public boolean getMax() {
-		return marker.equals("B");
+		return marker.equals(Markers.first);
 	}
 	
 	/**

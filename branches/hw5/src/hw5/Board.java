@@ -190,19 +190,6 @@ public class Board {
 		return legalMoves;
 	}
 
-	/*
-	private boolean validMove(Move location) {
-		boolean max=true, min=true;
-		
-		if ( location.y >this.SIZE || location.x >this.SIZE )
-			max = false;
-		if (location.y < 1 || location.x <1 )
-			min = false;
-		
-		return max && min;
-		
-	}
-	*/
 	/**
 	 * Explores a direction specified by deltaX and deltaY from an origin
 	 * cell searching for a legal move.
@@ -223,31 +210,6 @@ public class Board {
 			return findLegalMove(x + deltaX, y + deltaY, deltaX, deltaY, marker);
 		}
 	}
-	
-	/*
-	private Move findLegalMove(Move oldMove, Move newMove,Player player) {
-		
-		if (newMove == null)
-			return null;
-		else if (newMove.marker==null)
-			return newMove;
-		else if  (newMove.marker.equals(player.getMarker()))
-			return null;
-		else
-			return findLegalMove(newMove, makeNewMove(oldMove, newMove), player);
-	}
-	
-	private Move makeNewMove(Move oldM,Move newM) {
-		int x = newM.x - oldM.x;
-		int y = newM.y - oldM.y;
-		Move result = new Move(newM.x + x, newM.y+ y,null,0);
-		if ( validMove(result) ) {
-			result.marker = board[result.x-1][result.y-1];
-			return result;
-		}else
-			return null;
-	}
-	*/
 	
 	/**
 	 * This method is designed to determine if the last move made
