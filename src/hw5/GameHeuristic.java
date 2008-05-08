@@ -127,5 +127,25 @@ public class GameHeuristic {
 		return result;
 	}
 	
+	/*
+	 * Heuristics to Implement
+	 * ************************
+	 * 
+	 * Stable discs - Discs that can never be converted
+	 * Wedges - Getting between opponent's discs on the edges so that he can't
+	 * 			flip the newly-placed edge piece
+	 * Mobility - Number and quality of possible moves.  Playing to a square
+	 * 			a corner is bad as it allows your opponent to take the corner.
+	 * 			Force your opponent to take a square next to the corner and you
+	 * 			profit.
+	 * Frontier -	Number of pieces you have next to an empty square.  The
+	 * 				more you have, the more of your pieces opponent can
+	 * 				possibly flip
+	 * Center control - Controlling the center often affords your protection
+	 * 					from conversions and gives lots of options for
+	 * 					opponent's pieces to convert.
+	 * 					Might be used in conjunction with frontier heuristic 
+	 */
+	
 	
 }
