@@ -20,6 +20,7 @@ public class Move {
 	
 	//field indicating what marks the move.
 	public String marker;
+	
 	/**
 	 * Constructs a move object based on the coordinates, marker, and value passed.
 	 * 
