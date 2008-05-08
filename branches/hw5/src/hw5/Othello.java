@@ -31,6 +31,7 @@ public class Othello {
 		System.out.println("***********************");
 		System.out.println("Let's Play Othello!");
 		System.out.println("***********************");
+		gameBoard.printBoard();
 		
 		while ( !gameBoard.isGameOver() ) {
 			players.get(turn).makeMove(gameBoard);

@@ -13,6 +13,8 @@ import java.util.ArrayList;
  *
  */
 public class Board {
+	boolean noMovesP1;
+	boolean noMovesP2;
 	//final constant representing the size of the board
 	private final int  SIZE;
 	//a 2D array representing the board
@@ -111,8 +113,7 @@ public class Board {
 	 * @param deltaX	change in x coordinate for next cell
 	 * @param deltaY	change in y coordinate for next cell
 	 * @param marker	marker for player whose conversions we're finding
-	 * @return 	an ArrayList of Move objects representing cells that will be
-	 * 			converted
+	 * @return 	an ArrayList of Moves indicating cells to be converted
 	 */
 	
 	private ArrayList<Move> findConversions(int x, int y, int deltaX, int deltaY, String marker) {
@@ -176,6 +177,16 @@ public class Board {
 				}
 			}
 		}
+		if (legalMoves.isEmpty()) {
+			if (player.getMarker().equals(Markers.first)) {
+				noMovesP1 = true;
+			} else {
+				noMovesP2 = true;
+			}
+		} else {
+			noMovesP1 = false;
+			noMovesP2 = false;
+		}
 		return legalMoves;
 	}
 
@@ -237,6 +248,7 @@ public class Board {
 			return null;
 	}
 	*/
+	
 	/**
 	 * This method is designed to determine if the last move made
 	 * resulted as the winning move. 
@@ -317,7 +329,7 @@ public class Board {
 	 * @return a boolean: true, if the game has ended. false, otherwise.
 	 */
 	public boolean isGameOver(){
-		return (moves>= SIZE*SIZE) || winner != null;
+		return noMovesP1 && noMovesP2;
 	}
 	
 	/**
@@ -336,7 +348,9 @@ public class Board {
 	 */
 	public void printBoard() {
 		System.out.println("*************************");
+		System.out.println("  1 2 3 4 5 6 7 8");
 		for (int i=0; i<SIZE;i++) {
+			System.out.print((i + 1) + " ");
 			for (int k=0; k<SIZE; k++) 
 				if ( board[i][k] != null)
 					System.out.print(board[i][k].toString() + " ");
