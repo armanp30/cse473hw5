@@ -15,7 +15,7 @@ public class GameHeuristic {
 			return minValue(board);
 	}
 	
-	private static Move maxValue(Board board) {
+	private static Move maxValue(Board board, String marker) {
 		Move result = new Move(0,0,null,-2);
 		ArrayList<Move> conversions;
 		
@@ -36,7 +36,7 @@ public class GameHeuristic {
 		return result;
 	}
 	
-	private static Move minValue(Board board) {
+	private static Move minValue(Board board, String marker) {
 		Move result = new Move(0,0,null,2);
 		ArrayList<Move> conversions;
 		
@@ -80,7 +80,7 @@ public class GameHeuristic {
 		
 	}
 	
-	public static Move maxValue(Board board, int alpha, int beta) {
+	public static Move maxValue(Board board, int alpha, int beta, String marker) {
 		Move result = new Move(0,0,null,-2);
 		ArrayList<Move> conversions;
 		
@@ -104,7 +104,7 @@ public class GameHeuristic {
 		return result;
 	}
 	
-	public static Move minValue(Board board, int alpha, int beta) {
+	public static Move minValue(Board board, int alpha, int beta, String marker) {
 		Move result = new Move(0,0,null,2);
 		ArrayList<Move> conversions;
 		
@@ -144,8 +144,125 @@ public class GameHeuristic {
 	 * Center control - Controlling the center often affords your protection
 	 * 					from conversions and gives lots of options for
 	 * 					opponent's pieces to convert.
-	 * 					Might be used in conjunction with frontier heuristic 
+	 * 					Might be used in conjunction with frontier heuristic
 	 */
 	
 	
+	/**
+	 * Computes the number of corners this marker occupies.
+	 * 
+	 * @param board	The board to examine
+	 * @param marker	
+	 * @return
+	 * 
+	 */
+	private int occupiedCorners(Board board, String marker) {
+		int val = 0;
+		if (board[0][0].equals(marker)) {
+			val++;
+		}
+		if (board[0][board.getBoardSize() - 1].equals(marker)) {
+			val++;
+		}
+		if (board[board.getBoardSize() - 1][board.getBoardSize() - 1 ].equals(marker)) {
+			val++;
+		}
+		if (board[board.getBoardSize() - 1][0].equals(marker)) {
+			val++;
+		}
+		return val;
+	}
+	
+	private int fullEdges(Board board, String marker) {
+		boolean fullEdge = true;
+		int val = 0;
+		int x;
+		int y;
+		for (x = 0; x < 8; x += 7) {
+			for (y = 0; y < board.getBoardSize(); y++) {
+				if (!board[x][y].equals(marker)) {
+					fullEdge = false;
+				}
+			}
+			if (fullEdge == true) {
+				val++;
+			}
+			fullEdge = true;
+		}
+		for (y = 0; y < 8; y += 7) {
+			for (x = 0; x < board.getBoardSize(); x++) {
+				if (!board[x][y].equals(marker)) {
+					fullEdge = false;
+				}
+			}
+			if (fullEdge == true) {
+				val++;
+			}
+			fullEdge = true;
+		}
+		return val;
+	}
+	
+	/*
+	 * A disc is stable if it is in a corner formed either by the edge of the
+	 * board or by another stable disc.
+	 */
+	
+	private int stableDiscs(Board board, String marker) {
+		boolean[][] stable = new boolean[8][8];
+		int edge = board.getBoardSize() - 1;
+		int x = 0;
+		int y = 0;
+		int deltaX;
+		int deltaY;
+		if (board[x][y].equals(marker)) {
+			deltaX = 1;
+			deltaY = 1;
+			do {
+				for (i = x + deltaX; x <= edge; x += deltaX) {
+					if (board[i][y].equals(marker)) {
+						stable[i][y] = true;
+					} else {
+						break;
+					}
+				}
+				for (i = y + deltaY; y <= edge; y += deltaY) {
+					if (board[x][i].equals(marker)) {
+						stable[x][i] = true;
+					} else {
+						break;
+					}
+				}
+				x += 1;
+				y += 1;
+			} (while board[x][y].equals(marker) && board[x - 1][y].equals(marker) && board[x][y-1].equals(marker));
+		}
+		if (board[0][edge].equals(marker)) {
+			stable[0][edge] = true;
+		}
+		if (board[edge][edge].equals(marker)) {
+			stable[edge][edge] = true;
+		}
+		if (board[edge][0].equals(marker)) {
+			stable[edge][0] = true;
+		}
+		Find discs that are next to an edge and a stable disc
+	}
+	
+	private void findStableDiscs(boolean[][] stable, x, y, deltaX, deltaY) {
+		for (i = x + deltaX; x <= edge; x += deltaX) {
+			if (board[i][y].equals(marker)) {
+				stable[i][y] = true;
+			} else {
+				break;
+			}
+		}
+		for (i = y + deltaY; y <= edge; y += deltaY) {
+			if (board[x][i].equals(marker)) {
+				stable[x][i] = true;
+			} else {
+				break;
+			}
+		}
+	}
 }
