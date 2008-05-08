@@ -8,14 +8,6 @@ package hw5;
 /**
  * This class is designed to represent an AI Player.
  * @author alexmeng
- * 
- * ML:nbdsf
- * asdlfknas;ldhbfas
- * df;ksbdf;kjabsdf
- * askdjbf;kajsbdf
- * asdkfjb;kasjdbf
- * asdfkjbalksdjbf
- * asdfkjbalkdjfb
  */
 public class AIPlayer implements Player {
 	//an internal string to represent the Player on the board
