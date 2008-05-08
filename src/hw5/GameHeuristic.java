@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class GameHeuristic {
 
-	public static Move SearchMiniMax( Player player, Board board){ 		
+	public static Move SearchMiniMax(Player player, Board board){ 		
 		if (player.getMax())
 			return maxValue(board);
 		else
