@@ -22,7 +22,7 @@ public class GameHeuristic {
 		ArrayList<Move> childrens = new ArrayList<Move>();//board.getEmptySpots();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
-			temp.marker = "X";
+			temp.marker = Markers.first;
 			conversions = board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
@@ -43,7 +43,7 @@ public class GameHeuristic {
 		ArrayList<Move> childrens = board.getLegalMoves(null); //getEmptySpots();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
-			temp.marker = "O";
+			temp.marker = Markers.second;
 			conversions = board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
@@ -87,7 +87,7 @@ public class GameHeuristic {
 		ArrayList<Move> childrens = board.getLegalMoves(null); //getEmptySpots();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
-			temp.marker = "X";
+			temp.marker = Markers.first;
 			conversions = board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
@@ -111,7 +111,7 @@ public class GameHeuristic {
 		ArrayList<Move> childrens = board.getLegalMoves(null);//();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
-			temp.marker = "O";
+			temp.marker = Markers.second;
 			conversions = board.makeMove(temp);
 			if  ( terminalTest(board) )
 				temp.value = utility(board);
