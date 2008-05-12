@@ -54,11 +54,15 @@ public class AIPlayer implements Player {
 	public void makeMove(Board state) {
 		Move bestMove;
 		
-	
 		bestMove = GameHeuristic.iterativeAStar(this, state);
-		System.out.println(bestMove.toString());
 		
-		state.makeMove(bestMove);
+		if (bestMove == null)
+			System.out.println("Passing turn, no moves possible");
+		else	{
+			System.out.println(bestMove.toString());
+			state.makeMove(bestMove);
+		}
+		
 	}
 
 }
