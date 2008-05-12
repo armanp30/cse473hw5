@@ -54,10 +54,9 @@ public class AIPlayer implements Player {
 	public void makeMove(Board state) {
 		Move bestMove;
 		
-		if (useMMax) 
-			bestMove = GameHeuristic.SearchMiniMax(this, state);
-		else 
-			bestMove = GameHeuristic.SearchAlphaBetaPruning(this,state);
+	
+		bestMove = GameHeuristic.iterativeAStar(this, state);
+		System.out.println(bestMove.toString());
 		
 		state.makeMove(bestMove);
 	}

@@ -8,56 +8,91 @@ import java.util.ArrayList;
 
 public class GameHeuristic {
 
-	public static Move SearchMiniMax(Player player, Board board){ 		
-		if (player.getMax())
-			return maxValue(board);
-		else
-			return minValue(board);
+	private static long ENDTIME;
+	public static  Move iterativeAStar(Player player, Board board) {
+		ENDTIME = System.currentTimeMillis() + 10 *125;
+		Move result = null;
+		try {
+		for (int i=1;i<60;i++) {			
+				result = SearchAlphaBetaPruning(player, board.clone(), i);
+		}}
+		catch (IllegalStateException ise )
+		{}		 
+		return result;
 	}
 	
-	private static Move maxValue(Board board, String marker) {
-		Move result = new Move(0,0,null,-2);
+	private static Move SearchAlphaBetaPruning(Player player,Board board, int depth) {
+		if (player.getMax())
+			return maxValue(board,Markers.first,-200, 200, depth);
+		else
+			return minValue(board,Markers.second, -200, 200, depth);	
+	}
+	
+	
+	private static Move maxValue(Board board, String marker, int alpha, int beta, int depth) {
+		
+		if ( System.currentTimeMillis() > ENDTIME)
+			throw new IllegalStateException();
+		Move result = new Move(1,1,null,-200);
 		ArrayList<Move> conversions;
 		
-		ArrayList<Move> childrens = new ArrayList<Move>();//board.getEmptySpots();
+		ArrayList<Move> childrens = board.getLegalMoves(marker); //getEmptySpots();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
-			temp.marker = Markers.first;
-			conversions = board.makeMove(temp);
-			if  ( terminalTest(board) )
-				temp.value = utility(board);
+			temp.marker = Markers.first;			
+			conversions = board.makeMove(temp);	
+			
+			if (cutoffTest(depth))				
+				temp.value = evaluateState(board);		
 			else
-				temp.value = minValue(board).value;
+				temp.value = minValue(board, Markers.second, alpha, beta, --depth).value;
+			
 			if (result.value < temp.value)
 				result = temp;
 			board.undoMove(temp, conversions);
+			if (result.value >= beta)
+				return result;
+			alpha = Math.max(alpha, result.value);
 		}
 	
 		return result;
 	}
 	
-	private static Move minValue(Board board, String marker) {
-		Move result = new Move(0,0,null,2);
+	private static Move minValue(Board board, String marker, int alpha, int beta, int depth) {
+		if ( System.currentTimeMillis() > ENDTIME)
+			throw new IllegalStateException();
+		Move result = new Move(1,1,null,200);
 		ArrayList<Move> conversions;
 		
-		ArrayList<Move> childrens = board.getLegalMoves(null); //getEmptySpots();
+		ArrayList<Move> childrens = board.getLegalMoves(marker); //getEmptySpots();
 		for (int i=0; i<childrens.size(); i++ ) {
 			Move temp = childrens.get(i);
 			temp.marker = Markers.second;
 			conversions = board.makeMove(temp);
-			if  ( terminalTest(board) )
-				temp.value = utility(board);
+		
+			if (cutoffTest(depth)) 
+				temp.value = evaluateState(board);						
 			else
-				temp.value = maxValue(board).value;
-			if (result.value >= temp.value)
+				temp.value = maxValue(board, Markers.first, alpha, beta, --depth).value;
+			
+			if (result.value > temp.value)
 				result = temp;
 			board.undoMove(temp, conversions);
+			
+			if (result.value <= alpha)
+				return result;
+			beta = Math.min( beta, result.value);
 		}
+	
 		return result;
 	}
 	
-	private static boolean terminalTest(Board board) {
-		return board.isGameOver();
+	private static boolean cutoffTest( int depth) {			
+		return depth==0;
+	}
+	
+	private static int evaluateState(Board board) {
+		return utility(board);		
 	}
 	
 	/**
@@ -71,61 +106,11 @@ public class GameHeuristic {
 	private static int utility(Board board) {
 		return board.getMajority();	
 	}
+
 	
-	public static Move SearchAlphaBetaPruning(Player player,Board board) {
-		if (player.getMax())
-			return maxValue(board, -2, 2);
-		else
-			return minValue(board, -2, 2);
-		
-	}
+
 	
-	public static Move maxValue(Board board, int alpha, int beta, String marker) {
-		Move result = new Move(0,0,null,-2);
-		ArrayList<Move> conversions;
-		
-		ArrayList<Move> childrens = board.getLegalMoves(null); //getEmptySpots();
-		for (int i=0; i<childrens.size(); i++ ) {
-			Move temp = childrens.get(i);
-			temp.marker = Markers.first;
-			conversions = board.makeMove(temp);
-			if  ( terminalTest(board) )
-				temp.value = utility(board);
-			else
-				temp.value = minValue(board).value;
-			if (result.value < temp.value)
-				result = temp;
-			board.undoMove(temp, conversions);
-			if (result.value >= beta)
-				return result;
-			alpha = Math.max(alpha, result.value);
-		}
 	
-		return result;
-	}
-	
-	public static Move minValue(Board board, int alpha, int beta, String marker) {
-		Move result = new Move(0,0,null,2);
-		ArrayList<Move> conversions;
-		
-		ArrayList<Move> childrens = board.getLegalMoves(null);//();
-		for (int i=0; i<childrens.size(); i++ ) {
-			Move temp = childrens.get(i);
-			temp.marker = Markers.second;
-			conversions = board.makeMove(temp);
-			if  ( terminalTest(board) )
-				temp.value = utility(board);
-			else
-				temp.value = maxValue(board).value;
-			if (result.value >= temp.value)
-				result = temp;
-			board.undoMove(temp, conversions);
-			if (result.value <= alpha)
-				return result;
-			beta = Math.min( beta, result.value);
-		}
-		return result;
-	}
 	
 	/*
 	 * Heuristics to Implement
@@ -156,113 +141,113 @@ public class GameHeuristic {
 	 * @return
 	 * 
 	 */
-	private int occupiedCorners(Board board, String marker) {
-		int val = 0;
-		if (board[0][0].equals(marker)) {
-			val++;
-		}
-		if (board[0][board.getBoardSize() - 1].equals(marker)) {
-			val++;
-		}
-		if (board[board.getBoardSize() - 1][board.getBoardSize() - 1 ].equals(marker)) {
-			val++;
-		}
-		if (board[board.getBoardSize() - 1][0].equals(marker)) {
-			val++;
-		}
-		return val;
-	}
-	
-	private int fullEdges(Board board, String marker) {
-		boolean fullEdge = true;
-		int val = 0;
-		int x;
-		int y;
-		for (x = 0; x < 8; x += 7) {
-			for (y = 0; y < board.getBoardSize(); y++) {
-				if (!board[x][y].equals(marker)) {
-					fullEdge = false;
-				}
-			}
-			if (fullEdge == true) {
-				val++;
-			}
-			fullEdge = true;
-		}
-		for (y = 0; y < 8; y += 7) {
-			for (x = 0; x < board.getBoardSize(); x++) {
-				if (!board[x][y].equals(marker)) {
-					fullEdge = false;
-				}
-			}
-			if (fullEdge == true) {
-				val++;
-			}
-			fullEdge = true;
-		}
-		return val;
-	}
-	
-	/*
-	 * A disc is stable if it is in a corner formed either by the edge of the
-	 * board or by another stable disc.
-	 */
-	
-	private int stableDiscs(Board board, String marker) {
-		boolean[][] stable = new boolean[8][8];
-		int edge = board.getBoardSize() - 1;
-		int x = 0;
-		int y = 0;
-		int deltaX;
-		int deltaY;
-		if (board[x][y].equals(marker)) {
-			deltaX = 1;
-			deltaY = 1;
-			do {
-				for (i = x + deltaX; x <= edge; x += deltaX) {
-					if (board[i][y].equals(marker)) {
-						stable[i][y] = true;
-					} else {
-						break;
-					}
-				}
-				for (i = y + deltaY; y <= edge; y += deltaY) {
-					if (board[x][i].equals(marker)) {
-						stable[x][i] = true;
-					} else {
-						break;
-					}
-				}
-				x += 1;
-				y += 1;
-			} (while board[x][y].equals(marker) && board[x - 1][y].equals(marker) && board[x][y-1].equals(marker));
-		}
-		if (board[0][edge].equals(marker)) {
-			stable[0][edge] = true;
-		}
-		if (board[edge][edge].equals(marker)) {
-			stable[edge][edge] = true;
-		}
-		if (board[edge][0].equals(marker)) {
-			stable[edge][0] = true;
-		}
-		Find discs that are next to an edge and a stable disc
-	}
-	
-	private void findStableDiscs(boolean[][] stable, x, y, deltaX, deltaY) {
-		for (i = x + deltaX; x <= edge; x += deltaX) {
-			if (board[i][y].equals(marker)) {
-				stable[i][y] = true;
-			} else {
-				break;
-			}
-		}
-		for (i = y + deltaY; y <= edge; y += deltaY) {
-			if (board[x][i].equals(marker)) {
-				stable[x][i] = true;
-			} else {
-				break;
-			}
-		}
-	}
+//	private int occupiedCorners(Board board, String marker) {
+//		int val = 0;
+//		if (board[0][0].equals(marker)) {
+//			val++;
+//		}
+//		if (board[0][board.getBoardSize() - 1].equals(marker)) {
+//			val++;
+//		}
+//		if (board[board.getBoardSize() - 1][board.getBoardSize() - 1 ].equals(marker)) {
+//			val++;
+//		}
+//		if (board[board.getBoardSize() - 1][0].equals(marker)) {
+//			val++;
+//		}
+//		return val;
+//	}
+//	
+//	private int fullEdges(Board board, String marker) {
+//		boolean fullEdge = true;
+//		int val = 0;
+//		int x;
+//		int y;
+//		for (x = 0; x < 8; x += 7) {
+//			for (y = 0; y < board.getBoardSize(); y++) {
+//				if (!board[x][y].equals(marker)) {
+//					fullEdge = false;
+//				}
+//			}
+//			if (fullEdge == true) {
+//				val++;
+//			}
+//			fullEdge = true;
+//		}
+//		for (y = 0; y < 8; y += 7) {
+//			for (x = 0; x < board.getBoardSize(); x++) {
+//				if (!board[x][y].equals(marker)) {
+//					fullEdge = false;
+//				}
+//			}
+//			if (fullEdge == true) {
+//				val++;
+//			}
+//			fullEdge = true;
+//		}
+//		return val;
+//	}
+//	
+//	/*
+//	 * A disc is stable if it is in a corner formed either by the edge of the
+//	 * board or by another stable disc.
+//	 */
+//	
+//	private int stableDiscs(Board board, String marker) {
+//		boolean[][] stable = new boolean[8][8];
+//		int edge = board.getBoardSize() - 1;
+//		int x = 0;
+//		int y = 0;
+//		int deltaX;
+//		int deltaY;
+//		if (board[x][y].equals(marker)) {
+//			deltaX = 1;
+//			deltaY = 1;
+//			do {
+//				for (i = x + deltaX; x <= edge; x += deltaX) {
+//					if (board[i][y].equals(marker)) {
+//						stable[i][y] = true;
+//					} else {
+//						break;
+//					}
+//				}
+//				for (i = y + deltaY; y <= edge; y += deltaY) {
+//					if (board[x][i].equals(marker)) {
+//						stable[x][i] = true;
+//					} else {
+//						break;
+//					}
+//				}
+//				x += 1;
+//				y += 1;
+//			} (while board[x][y].equals(marker) && board[x - 1][y].equals(marker) && board[x][y-1].equals(marker));
+//		}
+//		if (board[0][edge].equals(marker)) {
+//			stable[0][edge] = true;
+//		}
+//		if (board[edge][edge].equals(marker)) {
+//			stable[edge][edge] = true;
+//		}
+//		if (board[edge][0].equals(marker)) {
+//			stable[edge][0] = true;
+//		}
+//		Find discs that are next to an edge and a stable disc
+//	}
+//	
+//	private void findStableDiscs(boolean[][] stable, x, y, deltaX, deltaY) {
+//		for (i = x + deltaX; x <= edge; x += deltaX) {
+//			if (board[i][y].equals(marker)) {
+//				stable[i][y] = true;
+//			} else {
+//				break;
+//			}
+//		}
+//		for (i = y + deltaY; y <= edge; y += deltaY) {
+//			if (board[x][i].equals(marker)) {
+//				stable[x][i] = true;
+//			} else {
+//				break;
+//			}
+//		}
+//	}
 }

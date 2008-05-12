@@ -38,6 +38,14 @@ public class Board {
 		setInitialState();
 	}
 	
+	private Board( int size, String[][] board, String winner, int moves ) {
+		this.SIZE = size;
+		this.board = board;
+		this.winner = winner;
+		this.moves = moves;
+		
+	}
+	
 	
 	/**
 	 * This method is designed to mark a specific location on the board
@@ -154,20 +162,20 @@ public class Board {
 	 * @param player, a Player object, representing which player to generate valid moves for.
 	 * @return an ArrayList<Move>, represents a collection of Move objects that are valid for the player passed.
 	 */
-	public ArrayList<Move> getLegalMoves(Player player) {
+	public ArrayList<Move> getLegalMoves(String marker) {
 		int checkX, checkY;
 		Move move;
 		ArrayList<Move> legalMoves = new ArrayList<Move>();
 		for (int x = 0; x < 8; x++) {
 			for (int y = 0; y < 8; y++) {
-				if (board[x][y] != null && board[x][y].equals(player.getMarker())) {
+				if (board[x][y] != null && board[x][y].equals(marker)) {
 					for (int deltaX = -1; deltaX < 2; deltaX++) {
 						for (int deltaY = -1; deltaY < 2; deltaY++) {
 							checkX = x + deltaX;
 							checkY = y + deltaY;
 							if ( checkX >= 0 && checkX < SIZE && checkY >= 0 &&
 									checkY < SIZE && board[checkX][checkY] != null) {
-								move = findLegalMove(checkX, checkY, deltaX, deltaY, player.getMarker());
+								move = findLegalMove(checkX, checkY, deltaX, deltaY, marker);
 								if (move != null && !legalMoves.contains(move)) {
 									legalMoves.add(move);
 								}
@@ -178,7 +186,7 @@ public class Board {
 			}
 		}
 		if (legalMoves.isEmpty()) {
-			if (player.getMarker().equals(Markers.first)) {
+			if (marker.equals(Markers.first)) {
 				noMovesP1 = true;
 			} else {
 				noMovesP2 = true;
@@ -202,7 +210,11 @@ public class Board {
 	 */
 
 	private Move findLegalMove(int x, int y, int deltaX, int deltaY, String marker) {
-		if (board[x][y] == null) {
+		if (x<0 || x > this.SIZE-1)
+			return null;
+		else if (y<0 || y > this.SIZE-1)
+			return null;
+		else if (board[x][y] == null) {
 			return new Move(x + 1, y + 1, marker, 0);
 		} else if (board[x][y].equals(marker)) {
 			return null;
@@ -271,10 +283,12 @@ public class Board {
 		
 		for (int i=0; i<this.SIZE;i++) {
 			for (int j=0; j<this.SIZE; j++) {
-				if ( this.board[i][j].equals(Markers.first) )
-					b++;
-				if ( this.board[i][j].equals(Markers.second) )
-					w--;					
+				if (this.board[i][j] != null ){
+					if ( this.board[i][j].equals(Markers.first) )
+						b++;
+					if ( this.board[i][j].equals(Markers.second) )
+						w--;					
+				}
 			}
 		}
 		
@@ -334,6 +348,16 @@ public class Board {
 		makeMove(new Move(4,5,Markers.first,0));
 		makeMove(new Move(4,4,Markers.second,0));
 		makeMove(new Move(5,5,Markers.second,0));
+	}
+	
+	public Board clone() {
+				
+		String[][] clone = new String[this.SIZE][this.SIZE];
+		
+		for ( int i=0;i<this.SIZE;i++)
+			for (int j=0;j<this.SIZE;j++)
+				clone[i][j] = this.board[i][j];		
+		return new Board(this.SIZE, clone, this.winner,this.moves);
 	}
 	
 }

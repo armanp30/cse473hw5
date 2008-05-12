@@ -45,7 +45,7 @@ public class HumanPlayer implements Player {
 	}
 	
 	public void makeMove(Board state) {
-		ArrayList<Move> legalMoves = state.getLegalMoves(this);
+		ArrayList<Move> legalMoves = state.getLegalMoves(this.marker);
 		Move temp;
 		do {
 			System.out.println("Player " + getMarker());
