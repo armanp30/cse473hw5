@@ -55,7 +55,7 @@ public class HumanPlayer implements Player {
 			System.out.println("Player " + getMarker());
 			System.out.println("Please select a position [0,"+state.getBoardSize() + "] using the format: x,y");
 			String[] grid = console.nextLine().split(",");
-			temp = new Move(Integer.parseInt(grid[0]),Integer.parseInt(grid[1]),this.getMarker(),0);
+			temp = new Move(Integer.parseInt(grid[1]),Integer.parseInt(grid[0]),this.getMarker(),0);
 			if (!legalMoves.contains(temp))
 					System.out.println("**Invalid Move**");
 		} while (!legalMoves.contains(temp));
