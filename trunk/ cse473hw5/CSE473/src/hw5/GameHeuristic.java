@@ -10,11 +10,14 @@ public class GameHeuristic {
 
 	private static long ENDTIME;
 	public static  Move iterativeAStar(Player player, Board board) {
-		ENDTIME = System.currentTimeMillis() + 10 *125;
+		ENDTIME = System.currentTimeMillis() + 15 *125;
 		Move result = null;
 		try {
 		for (int i=1;i<60;i++) {			
-				result = SearchAlphaBetaPruning(player, board.clone(), i);
+				if (board.getLegalMoves(player.getMarker()).size()==0)
+					return null;
+				else			
+					result = SearchAlphaBetaPruning(player, board.clone(), i);
 		}}
 		catch (IllegalStateException ise )
 		{}		 
@@ -42,7 +45,7 @@ public class GameHeuristic {
 			temp.marker = Markers.first;			
 			conversions = board.makeMove(temp);	
 			
-			if (cutoffTest(depth))				
+			if (cutoffTest(board, depth))				
 				temp.value = evaluateState(board);		
 			else
 				temp.value = minValue(board, Markers.second, alpha, beta, --depth).value;
@@ -70,7 +73,7 @@ public class GameHeuristic {
 			temp.marker = Markers.second;
 			conversions = board.makeMove(temp);
 		
-			if (cutoffTest(depth)) 
+			if (cutoffTest(board, depth)) 
 				temp.value = evaluateState(board);						
 			else
 				temp.value = maxValue(board, Markers.first, alpha, beta, --depth).value;
@@ -87,10 +90,14 @@ public class GameHeuristic {
 		return result;
 	}
 	
-	private static boolean cutoffTest( int depth) {			
-		return depth==0;
+	private static boolean cutoffTest(Board board, int depth) {			
+		return depth==0 || staleMate(board);
 	}
 	
+	
+	private static boolean staleMate(Board board) {
+		return board.getLegalMoves(Markers.first).size() == 0 && board.getLegalMoves(Markers.second).size() == 0; 
+	}
 	private static int evaluateState(Board board) {
 		return utility(board);		
 	}

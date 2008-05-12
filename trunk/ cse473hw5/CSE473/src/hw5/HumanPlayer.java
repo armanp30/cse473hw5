@@ -46,6 +46,10 @@ public class HumanPlayer implements Player {
 	
 	public void makeMove(Board state) {
 		ArrayList<Move> legalMoves = state.getLegalMoves(this.marker);
+		if (legalMoves.size() == 0) {
+			System.out.println("Passing turn, no legal moves available.");
+			return;
+		}
 		Move temp;
 		do {
 			System.out.println("Player " + getMarker());
