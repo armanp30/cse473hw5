@@ -144,117 +144,139 @@ public class GameHeuristic {
 	 * Computes the number of corners this marker occupies.
 	 * 
 	 * @param board	The board to examine
-	 * @param marker	
-	 * @return
+	 * @param marker Marker to count corner control for	
+	 * @return number of corners this marker occupies
 	 * 
 	 */
-//	private int occupiedCorners(Board board, String marker) {
-//		int val = 0;
-//		if (board[0][0].equals(marker)) {
-//			val++;
-//		}
-//		if (board[0][board.getBoardSize() - 1].equals(marker)) {
-//			val++;
-//		}
-//		if (board[board.getBoardSize() - 1][board.getBoardSize() - 1 ].equals(marker)) {
-//			val++;
-//		}
-//		if (board[board.getBoardSize() - 1][0].equals(marker)) {
-//			val++;
-//		}
-//		return val;
-//	}
-//	
-//	private int fullEdges(Board board, String marker) {
-//		boolean fullEdge = true;
-//		int val = 0;
-//		int x;
-//		int y;
-//		for (x = 0; x < 8; x += 7) {
-//			for (y = 0; y < board.getBoardSize(); y++) {
-//				if (!board[x][y].equals(marker)) {
-//					fullEdge = false;
-//				}
-//			}
-//			if (fullEdge == true) {
-//				val++;
-//			}
-//			fullEdge = true;
-//		}
-//		for (y = 0; y < 8; y += 7) {
-//			for (x = 0; x < board.getBoardSize(); x++) {
-//				if (!board[x][y].equals(marker)) {
-//					fullEdge = false;
-//				}
-//			}
-//			if (fullEdge == true) {
-//				val++;
-//			}
-//			fullEdge = true;
-//		}
-//		return val;
-//	}
-//	
-//	/*
-//	 * A disc is stable if it is in a corner formed either by the edge of the
-//	 * board or by another stable disc.
-//	 */
-//	
-//	private int stableDiscs(Board board, String marker) {
-//		boolean[][] stable = new boolean[8][8];
-//		int edge = board.getBoardSize() - 1;
-//		int x = 0;
-//		int y = 0;
-//		int deltaX;
-//		int deltaY;
-//		if (board[x][y].equals(marker)) {
-//			deltaX = 1;
-//			deltaY = 1;
-//			do {
-//				for (i = x + deltaX; x <= edge; x += deltaX) {
-//					if (board[i][y].equals(marker)) {
-//						stable[i][y] = true;
-//					} else {
-//						break;
-//					}
-//				}
-//				for (i = y + deltaY; y <= edge; y += deltaY) {
-//					if (board[x][i].equals(marker)) {
-//						stable[x][i] = true;
-//					} else {
-//						break;
-//					}
-//				}
-//				x += 1;
-//				y += 1;
-//			} (while board[x][y].equals(marker) && board[x - 1][y].equals(marker) && board[x][y-1].equals(marker));
-//		}
-//		if (board[0][edge].equals(marker)) {
-//			stable[0][edge] = true;
-//		}
-//		if (board[edge][edge].equals(marker)) {
-//			stable[edge][edge] = true;
-//		}
-//		if (board[edge][0].equals(marker)) {
-//			stable[edge][0] = true;
-//		}
-//		Find discs that are next to an edge and a stable disc
-//	}
-//	
-//	private void findStableDiscs(boolean[][] stable, x, y, deltaX, deltaY) {
-//		for (i = x + deltaX; x <= edge; x += deltaX) {
-//			if (board[i][y].equals(marker)) {
-//				stable[i][y] = true;
-//			} else {
-//				break;
-//			}
-//		}
-//		for (i = y + deltaY; y <= edge; y += deltaY) {
-//			if (board[x][i].equals(marker)) {
-//				stable[x][i] = true;
-//			} else {
-//				break;
-//			}
-//		}
-//	}
+	private int occupiedCorners(Board board, String marker) {
+		int val = 0;
+		if (board[0][0].equals(marker)) {
+			val++;
+		}
+		if (board[0][board.getBoardSize() - 1].equals(marker)) {
+			val++;
+		}
+		if (board[board.getBoardSize() - 1][board.getBoardSize() - 1 ].equals(marker)) {
+			val++;
+		}
+		if (board[board.getBoardSize() - 1][0].equals(marker)) {
+			val++;
+		}
+		return val;
+	}
+	
+	/**
+	 * Computes the number of full edges this marker occupies
+	 * @param board The board to examine
+	 * @param marker To count edge control for
+	 * @return number of edges this marker controls
+	 */
+	
+	private int fullEdges(Board board, String marker) {
+		boolean fullEdge = true;
+		int val = 0;
+		int x;
+		int y;
+		for (x = 0; x < 8; x += 7) {
+			for (y = 0; y < board.getBoardSize(); y++) {
+				if (!board[x][y].equals(marker)) {
+					fullEdge = false;
+				}
+			}
+			if (fullEdge == true) {
+				val++;
+			}
+			fullEdge = true;
+		}
+		for (y = 0; y < 8; y += 7) {
+			for (x = 0; x < board.getBoardSize(); x++) {
+				if (!board[x][y].equals(marker)) {
+					fullEdge = false;
+				}
+			}
+			if (fullEdge == true) {
+				val++;
+			}
+			fullEdge = true;
+		}
+		return val;
+	}
+	
+	/*
+	 * A disc is stable if it is in a corner formed either by the edge of the
+	 * board or by another stable disc.
+	 */
+	
+	private int stableDiscs(Board board, String marker) {
+		boolean[][] stable = new boolean[board.getBoardSize()][board.getBoardSize()];
+		int edge = board.getBoardSize() - 1;
+		int x = 0;
+		int y = 0;
+		int deltaX;
+		int deltaY;
+		if (board[x][y].equals(marker)) {
+			deltaX = 1;
+			deltaY = 1;
+			do {
+				for (i = x + deltaX; x <= edge; x += deltaX) {
+					if (board[i][y].equals(marker)) {
+						stable[i][y] = true;
+					} else {
+						break;
+					}
+				}
+				for (i = y + deltaY; y <= edge; y += deltaY) {
+					if (board[x][i].equals(marker)) {
+						stable[x][i] = true;
+					} else {
+						break;
+					}
+				}
+				x += 1;
+				y += 1;
+			} (while board[x][y].equals(marker) && board[x - 1][y].equals(marker) && board[x][y-1].equals(marker));
+		}
+		if (board[0][edge].equals(marker)) {
+			stable[0][edge] = true;
+		}
+		if (board[edge][edge].equals(marker)) {
+			stable[edge][edge] = true;
+		}
+		if (board[edge][0].equals(marker)) {
+			stable[edge][0] = true;
+		}
+	}
+	
+	private void findStableDiscs(Board board, boolean[][] stable, int x, int y, int deltaX, int deltaY, String marker) {
+		int edge = getBoardSize() - 1;
+		for (i = x + deltaX; x <= edge; x += deltaX) {
+			if (board[i][y].equals(marker)) {
+				stable[i][y] = true;
+			} else {
+				break;
+			}
+		}
+		for (i = y + deltaY; y <= edge; y += deltaY) {
+			if (board[x][i].equals(marker)) {
+				stable[x][i] = true;
+			} else {
+				break;
+			}
+		}
+	}
+	
+	private boolean isStable(Board board, boolean stable[][], int x, int y, int deltaX, int deltaY, String marker) {
+		edge = board.getBoardSize() - 1;
+		bool safeX = false;
+		bool safeY = false;
+		if (x - deltaX > edge || x - deltaX < 0)
+			safeX = true;
+		if (y - deltaY > edge || x - deltaX < 0)
+			safeY = true;
+		if (safeY && safeX)
+			return true;
+		if (x + deltaX)
+		
+		
+	}
 }
